@@ -8,15 +8,18 @@
 #         run: echo "Helo World "
 #       - name: Print goodbye
 #         run: echo "Done Good Bye!"
-name: First Workflow 
-on: 
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Define env name'     
-        required: true
-        default: 'prod'
-      branch:
-        description: 'Define branch name'     
-        required: true
-        default: 'master'
+name: Build Command
+on:
+  repository_dispatch:
+    types: [build-command]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the pull request branch
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ github.event.client_payload.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.client_payload.pull_request.head.ref }}
+          path: ${{ github.event.repository.name }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
