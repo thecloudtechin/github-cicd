@@ -1,0 +1,11 @@
+name: First Workflow 
+on: workflow_dispatch   # This means user can manually Start the Workflow
+jobs: 
+  first_job:
+    runs-on:  ubuntu-latest
+    steps:
+      - name: Print Greetings 
+        run: echo "Helo World "
+      - name: Print goodbye
+        run: echo "Done Good Bye!"
+
