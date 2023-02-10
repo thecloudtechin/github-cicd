@@ -36,6 +36,6 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
       - name: Run terraform init in terraform dir
         run: cd terraform && terraform init
-      - name: Terraform destroy
-        run: cd terraform && terraform destroy -auto-approve
+      - name: Terraform apply
+        run: cd terraform && terraform apply -auto-approve
     
