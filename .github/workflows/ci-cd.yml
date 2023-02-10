@@ -20,7 +20,8 @@ jobs:
     name: Build and push docker image
     runs-on: ubuntu-latest
     environment: develop-env
-    if: github.ref == 'refs/heads/master'
+    # if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v3
-      - run: cd dg-api && docker build -t arunr039/lumen-api:v1
+      - run: ls -l
+      # - run: cd dg-api && docker build -t arunr039/lumen-api:v1
