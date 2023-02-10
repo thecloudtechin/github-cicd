@@ -6,8 +6,8 @@ resource "aws_key_pair" "dove-key" {
 }
 
 resource "aws_instance" "ec2-instances" {
-    ami = var.AMIS[var.REGION]
-    availability_zone = var.ZONE1
+    ami = "ami-0be14a4fc6ac897de"
+    availability_zone = "ap-south-1a"
     instance_type = "t2.micro"
     key_name = aws_key_pair.dove-key.key_name
   #  vpc_security_group_ids = [ "sg-0e8aa9a9abb78902b" ]
@@ -32,7 +32,7 @@ resource "aws_instance" "ec2-instances" {
       
     }
     connection {
-      user = var.USER
+      user = "ubuntu"
       private_key = file("dove-key")
       host = self.public_ip
       
