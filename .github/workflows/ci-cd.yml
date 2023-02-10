@@ -39,7 +39,7 @@ jobs:
       - name: list dir
         run: ls -l 
       - name: list modules
-        run: cd .modules && ls -l
+        run: cd terraform/modules && ls -l
 
       # - name: Terraform apply
       #   run: cd terraform && terraform apply -auto-approve
