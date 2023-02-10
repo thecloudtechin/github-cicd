@@ -6,7 +6,7 @@ resource "aws_key_pair" "dove-key" {
 }
 
 resource "aws_instance" "ec2-instances" {
-    ami = "ami-0be14a4fc6ac897de"
+    ami = "ami-0f8ca728008ff5af4"
     availability_zone = "ap-south-1a"
     instance_type = "t3.medium"
     key_name = aws_key_pair.dove-key.key_name
