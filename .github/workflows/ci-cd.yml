@@ -26,3 +26,12 @@ jobs:
       - run: ls -l
       - run: cd dg-api && ls -l
       - run: cd dg-api && docker build -t arunr039/lumen-api:v1 .
+  infrastructure-setup:
+    name: building the cloud infra
+    runs-on: ubuntu-latest
+    environment: develop-env
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v1
+      - name: Run terraform init in terraform dir
+        run: cd terraform && terraform init
