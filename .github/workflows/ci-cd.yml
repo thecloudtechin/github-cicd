@@ -19,6 +19,7 @@ jobs:
   build-and-push-docker-image:
     name: Build and push docker image
     runs-on: ubuntu-latest
+    needs: infrastructure-setup
     environment: develop-env
     # if: github.ref == 'refs/heads/master'
     steps:

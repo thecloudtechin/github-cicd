@@ -15,7 +15,7 @@ variable "AMIS" {
 }
 
 variable "ZONE1" {
-    default = "us-east-2a"
+    default = "ap-south-1a"
   
 }
 
@@ -25,7 +25,7 @@ variable "USER" {
 }
 
 variable "ACCESS_KEY" {
-    edefault =  ${{ secrets.AWS_ACCESS_KEY_ID }}
+    default =  ${{ secrets.AWS_ACCESS_KEY_ID }}
 }
 variable "SECRET_KEY" {
     default = ${{ secrets.AWS.ACCESS_SECRET_KEY }}
