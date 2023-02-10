@@ -1,6 +1,6 @@
 variable "REGION" {
     description = "AWS Region for Launching VPC"
-    default = "us-east-2"
+    default = "ap-south-1"
   
 }
 
@@ -24,5 +24,10 @@ variable "USER" {
   
 }
 
-variable "ACCESS_KEY" {}
-variable "SECRET_KEY" {}
+variable "ACCESS_KEY" {
+    edefault =  ${{ secrets.AWS_ACCESS_KEY_ID }}
+}
+variable "SECRET_KEY" {
+    default = ${{ secrets.AWS.ACCESS_SECRET_KEY }}
+    
+}
