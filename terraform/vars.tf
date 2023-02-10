@@ -25,9 +25,9 @@ variable "USER" {
 }
 
 variable "ACCESS_KEY" {
-    default =  ${{ secrets.AWS_ACCESS_KEY_ID }}
+    default =  "AKIA5Y2IBW7RJBSVPZ7V"
 }
 variable "SECRET_KEY" {
-    default = ${{ secrets.AWS.ACCESS_SECRET_KEY }}
+    default = "VivCBUWFZtGEecjjRgMEHE1WOvqWgomKP20S3rsc"
     
 }
