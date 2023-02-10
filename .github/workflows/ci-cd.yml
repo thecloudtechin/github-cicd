@@ -1,7 +1,7 @@
 name: app-ci-pipeline
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets_AWS.ACCESS_SECRET_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 on:
   push:
