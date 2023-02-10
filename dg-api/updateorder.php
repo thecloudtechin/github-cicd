@@ -1,0 +1,376 @@
+<?php 
+date_default_timezone_set('Europe/London');
+include 'db.php';
+// Takes raw data from the request
+$json = file_get_contents('php://input');
+// Converts it into a PHP object
+$data = json_decode($json);
+$id = $_GET["id"];
+$status_msg = '';
+$reason = '';
+
+
+$dT = date('H:i:s',strtotime('+'.$data->time.' minutes', strtotime(date('H:i:s'))));
+
+if($data->status == '7')
+{
+
+mysqli_query($conn,'UPDATE orders SET status= "'.$data->status.'"  , 
+note= "'.$data->reason.'",delivery_time= "'.$dT.'",updated_at = "'.date('Y-m-d H:i:s').'"   WHERE id = "'.$_GET['id'].'"');
+}
+else
+{
+
+mysqli_query($conn,'UPDATE orders SET status= "'.$data->status.'"  , note= "'.$data->reason.'",updated_at = "'.date('Y-m-d H:i:s').'"  WHERE id = "'.$_GET['id'].'"');
+}
+
+
+
+if($data->status == '6')
+{
+    $status_msg = "Rejected by Hotel";
+    $reason = "Reason :". $data->reason;
+
+    
+ $email =    $data->email;
+ 
+$msg="Your Order is Rejected by hotel For More info contact hotel,".$data->reason." Order No. ".$data->orderno;
+$from="no-reply@deliveryguru.org.uk";
+$from_name="DeliveryGuru";
+//SMTP mail Config username and password		
+$account="order@deliveryguru.co.uk";
+$password="Glasgow2019";
+
+include("phpmailer/class.phpmailer.php");
+$mail = new PHPMailer();
+$mail->IsSMTP();
+//$mail->SMTPDebug = 3;
+$mail->CharSet = 'UTF-8';
+$mail->Host = "smtp.gmail.com";
+$mail->SMTPAuth= true;
+$mail->Port = 465; // Or 587
+$mail->isHTML(true);
+$mail->Username= $account;
+$mail->Password= $password;
+$mail->SMTPSecure = 'ssl';
+$reply="order@deliveryguru.co.uk";
+$replyname="Restaurant order canceled";
+$subject = "Your order Canceled!";
+//SMS Panel Details
+$mail->From = $from;
+$mail->FromName= $from_name;
+$mail->Subject = $subject;
+$mail->Body = $msg;
+$mail->addAddress($email );
+$mail->addAddress($reply);
+$mail->AddReplyTo($reply, $replyname);
+$mail->AddCC('order@deliveryguru.co.uk', 'Restaurants');
+$mailstate='';
+if($mail->send()){
+
+
+// $currentDate = date('d/n/Y');
+// $result = mysqli_query($conn, "select *,fcmServerKey,users.token,orders.email,orders.discount,orders.number,orders.name,orders.created_at as created_at,orders.id as orderid,orders.order_no as order_no,cast(orders.delivery_charges as decimal(4,1)) as delivery_fee_new, orders.status as o_status,orders.updated_at as o_updated ,restaurants.hotel_name,restaurants.address as hotel_address from orders INNER JOIN restaurants ON restaurants.id=orders.hotel_id INNER JOIN users ON users.id=orders.user_id where (orders.created_at >= CURDATE() OR orders.day = '$currentDate') AND hotel_id IN (" . $data->hotel_id . ") AND orders.status != 0 ORDER BY orders.id ASC");
+
+// $json_response = array();
+// $itemtotal = array();
+// if (mysqli_num_rows($result) > 0)
+// {
+//     while ($row = mysqli_fetch_assoc($result))
+//     {
+        
+//         if( $row["day"] == "" || $currentDate >= $row["day"] && $row["o_status"] != 13 || $row["o_status"] != '13'){
+
+//         $inner_json_response = array();
+
+//         $row_array['id'] = $row["orderid"];
+//  $row_array['hotel_id'] = $row["hotel_id"];
+//         $row_array['hotel_name'] = $row["hotel_name"];
+//         $row_array['hotel_address'] = $row["hotel_address"];
+//         $row_array['order_no'] = $row["order_no"];
+//         $row_array['fcmServerKey'] = $row["fcmServerKey"];
+//         $row_array['user_id'] = $row["user_id"];
+//         $row_array['token'] = $row["token"];
+//         $row_array['oc'] = $row["delivery_time"];
+//         $row_array['delivery_time'] = $row["delivery_time"];
+//         $row_array['notes'] = $row["note"];
+//         $row_array['delivery_fee'] = number_format((float)$row["delivery_fee_new"], 2, '.', '');
+//         $row_array['discount'] = $row["discount"];
+//         $row_array['amount'] = number_format((float)$row["amount"], 2, '.', '');
+//         $row_array['delivery_type'] = $row["delivery_type"];
+//         $row_array['payment_type'] = $row["payment_type"];
+//         $row_array['status'] = $row["o_status"];
+
+//           if (strtotime(date('Y-m-d H:i:s')) > strtotime($row["o_updated"])+(10*60)) {
+//             $row_array[ 'alert'] = "1";
+//         }
+//         else
+//         {
+//             $row_array[ 'alert'] = "0";
+//         }
+//         $row_array['alertTime'] = date("Y-m-d H:i:s", strtotime($row["o_updated"]) + (10 * 60));
+
+//         $row_array['created'] = $row["created_at"];
+//         $row_array['ctime'] = $row['delivery_time'];
+//         $row_array['updated'] = $row["o_updated"];
+//         $row_array['useremail'] = $row["email"];
+//         $row_array['usermobile'] = $row["number"];
+//         $row_array['usercontact'] = "";
+//          $row_array['username'] = htmlspecialchars($row["name"]);
+//         $row_array['sec'] = strtotime(date("Y-m-d") . " " . $row["delivery_time"]) - strtotime(date("Y-m-d H:i:s"));
+//         $row_array['exceed'] = str_replace(':', '', str_replace('-', '', str_replace(' ', '', date("Y-m-d") . " " . $row["delivery_time"])));
+//         if ($row["delivery_type"] == '1')
+//         {
+//             $row_array['home_address'] = "";
+//         }
+//         else
+//         {
+
+//             $result_inner = mysqli_query($conn, "select   home_address  as address, landmark from addresses where addresses.id = '" . $row["user_address_id"] . "' limit 1");
+
+//             if (mysqli_num_rows($result_inner) == 1)
+//             {
+//                 if ($row1 = mysqli_fetch_array($result_inner))
+//                 {
+//                     $row_array['home_address'] = $row1["address"] . "( Delivery Instruction : " . $row1["landmark"] . ")";
+//                 }
+//             }
+//         }
+
+//         $detail = mysqli_query($conn, "SELECT order_items.*,sub_categories.item_name FROM ((order_items INNER JOIN sub_categories ON sub_categories.id = order_items.item_id) INNER JOIN categories ON sub_categories.categories_id = categories.id) where order_no = '" . $row["order_no"] . "'");
+
+//         $counter = 0;
+//         $totalamt = 0;
+//         if (mysqli_num_rows($detail) > 0)
+// {
+//         while ($inner_row = mysqli_fetch_assoc($detail))
+//         {
+
+//             $extra_json_response = array();
+
+//             $row_array1['order_id'] = $inner_row["order_no"];
+//             $row_array1['item_id'] = $inner_row["item_id"];
+//             $row_array1['item_name'] = $inner_row["item_name"];
+//             $row_array1['item_price'] = number_format((float)$inner_row["amount"], 2, '.', '');
+//             $row_array1['qty'] = $inner_row["qty"];
+//             $row_array1['amount'] = number_format((float)$inner_row["amount"], 2, '.', '');
+//             $row_array1['notes'] = $inner_row["notes"];
+//             $counter++;
+//             $totalamt = $totalamt + number_format((float)$inner_row["amount"], 2, '.', '');
+
+//             $extra_detail = mysqli_query($conn, "SELECT  `add_on_id`, `item_id`,qty, `amount`,addon_name,qty from extras  inner join addon_items on addon_items.id = extras.add_on_id where order_no = '" . $inner_row["order_no"] . "' AND item_id = '" . $inner_row["item_id"] . "' AND extras.for = '" . $inner_row["extraFor"] . "' GROUP by addon_items.id");
+            
+           
+            
+            
+// if (mysqli_num_rows($extra_detail) > 0)
+// {
+//             while ($extra_row = mysqli_fetch_assoc($extra_detail))
+//             {
+
+//                 $row_array2['add_on_id'] = $extra_row["add_on_id"];
+//                 $row_array2['item_id'] = $extra_row["item_id"];
+//                 $row_array2['amount'] = number_format((float)$extra_row["amount"], 2, '.', '');
+//                 $row_array2['addon_name'] = $extra_row["addon_name"];
+//                 $row_array2['qty'] = $extra_row["qty"];
+//                 array_push($extra_json_response, $row_array2);
+//             }
+// }
+//             $row_array1['extra'] = $extra_json_response;
+//             array_push($inner_json_response, $row_array1);
+//         }
+// }
+
+//         $row_array['itemqty'] = $counter;
+//         $row_array['itemtprice'] = $totalamt;
+//         $row_array['sub_total'] = $totalamt . "";
+//         $row_array['order_details'] = $inner_json_response;
+
+//         array_push($json_response, $row_array);
+//     }
+//     }//if
+// }
+
+// echo json_encode($json_response);
+}
+else{
+// echo "mail fail";
+}
+    
+}
+if($data->status == '7')
+{
+    $status_msg = "Food is preparing";
+}
+if($data->status == '5')
+{
+    $status_msg = "Ready to delivery";
+}
+if($data->status == '3')
+{
+    $status_msg = "Order Completed";
+}
+
+
+$url = 'https://hooks.slack.com/services/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';
+$ch = curl_init($url);
+$payload = json_encode(array (
+  'text' => 'New Order Status.',
+  'blocks' => 
+  array (
+      0 => 
+    array (
+      'type' => 'section',
+      'text' => 
+      array (
+        'type' => 'mrkdwn',
+        'text' => "---------------------------------------------------------------",
+      ),
+    ),
+    1 => 
+    array (
+      'type' => 'section',
+      'text' => 
+      array (
+        'type' => 'mrkdwn',
+        'text' => " Order No. `".$data->orderno ."` Status `" .$status_msg."` :smile: `" .$reason."`",
+      ),
+    ),
+  ),
+));
+curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($ch);
+curl_close($ch);
+
+
+
+$currentDate = date('d/n/Y');
+
+$result = mysqli_query($conn, "select *,fcmServerKey,users.token,orders.email,orders.discount,orders.number,orders.name,orders.created_at as created_at,orders.id as orderid,orders.order_no as order_no,cast(orders.delivery_charges as decimal(4,1)) as delivery_fee_new, orders.status as o_status,orders.updated_at as o_updated ,restaurants.hotel_name,restaurants.address as hotel_address from orders INNER JOIN restaurants ON restaurants.id=orders.hotel_id INNER JOIN users ON users.id=orders.user_id where (orders.created_at >= CURDATE() OR orders.day = '$currentDate') AND hotel_id IN (" . $data->hotel_id . ") AND orders.status != 0 ORDER BY orders.id ASC");
+
+
+
+$json_response = array();
+$itemtotal = array();
+if (mysqli_num_rows($result) > 0)
+{
+    while ($row = mysqli_fetch_assoc($result))
+    {
+   if( $row["day"] == "" || $currentDate >= $row["day"] || $row["day"] == "null"){
+        $inner_json_response = array();
+
+        $row_array['id'] = $row["orderid"];
+ $row_array['hotel_id'] = $row["hotel_id"];
+        $row_array['hotel_name'] = $row["hotel_name"];
+        $row_array['hotel_address'] = $row["hotel_address"];
+        $row_array['order_no'] = $row["order_no"];
+        $row_array['fcmServerKey'] = $row["fcmServerKey"];
+        $row_array['user_id'] = $row["user_id"];
+        $row_array['token'] = $row["token"];
+        $row_array['oc'] = $row["delivery_time"];
+        $row_array['delivery_time'] = $row["delivery_time"];
+        $row_array['notes'] = $row["note"];
+        $row_array['delivery_fee'] = number_format((float)$row["delivery_fee_new"], 2, '.', '');
+        $row_array['discount'] = $row["discount"];
+        $row_array['amount'] = number_format((float)$row["amount"], 2, '.', '');
+        $row_array['delivery_type'] = $row["delivery_type"];
+        $row_array['payment_type'] = $row["payment_type"];
+        $row_array['status'] = $row["o_status"];
+
+          if (strtotime(date('Y-m-d H:i:s')) > strtotime($row["o_updated"])+(10*60)) {
+            $row_array[ 'alert'] = "1";
+        }
+        else
+        {
+            $row_array[ 'alert'] = "0";
+        }
+        $row_array['alertTime'] = date("Y-m-d H:i:s", strtotime($row["o_updated"]) + (10 * 60));
+
+        $row_array['created'] = $row["created_at"];
+        $row_array['ctime'] = $row['delivery_time'];
+        $row_array['updated'] = $row["o_updated"];
+        $row_array['useremail'] = $row["email"];
+        $row_array['usermobile'] = $row["number"];
+        $row_array['usercontact'] = "";
+         $row_array['username'] = htmlspecialchars($row["name"]);
+        $row_array['sec'] = strtotime(date("Y-m-d") . " " . $row["delivery_time"]) - strtotime(date("Y-m-d H:i:s"));
+        $row_array['exceed'] = str_replace(':', '', str_replace('-', '', str_replace(' ', '', date("Y-m-d") . " " . $row["delivery_time"])));
+        if ($row["delivery_type"] == '1')
+        {
+            $row_array['home_address'] = "";
+        }
+        else
+        {
+
+            $result_inner = mysqli_query($conn, "select   home_address  as address, landmark from addresses where addresses.id = '" . $row["user_address_id"] . "' limit 1");
+
+            if (mysqli_num_rows($result_inner) == 1)
+            {
+                if ($row1 = mysqli_fetch_array($result_inner))
+                {
+                    $row_array['home_address'] = $row1["address"] . "( Delivery Instruction : " . $row1["landmark"] . ")";
+                }
+            }
+        }
+
+        $detail = mysqli_query($conn, "SELECT order_items.*,sub_categories.item_name FROM ((order_items INNER JOIN sub_categories ON sub_categories.id = order_items.item_id) INNER JOIN categories ON sub_categories.categories_id = categories.id) where order_no = '" . $row["order_no"] . "'");
+
+        $counter = 0;
+        $totalamt = 0;
+        if (mysqli_num_rows($detail) > 0)
+{
+        while ($inner_row = mysqli_fetch_assoc($detail))
+        {
+
+            $extra_json_response = array();
+
+            $row_array1['order_id'] = $inner_row["order_no"];
+            $row_array1['item_id'] = $inner_row["item_id"];
+            $row_array1['item_name'] = $inner_row["item_name"];
+            $row_array1['item_price'] = number_format((float)$inner_row["amount"], 2, '.', '');
+            $row_array1['qty'] = $inner_row["qty"];
+            $row_array1['amount'] = number_format((float)$inner_row["amount"], 2, '.', '');
+            $row_array1['notes'] = $inner_row["notes"];
+            $counter++;
+             $totalamt = $totalamt + (number_format((float)$inner_row["amount"], 2, '.', '') * $inner_row["qty"]);
+
+            $extra_detail = mysqli_query($conn, "SELECT  `add_on_id`, `item_id`,qty, `amount`,addon_name,qty from extras  inner join addon_items on addon_items.id = extras.add_on_id where order_no = '" . $inner_row["order_no"] . "' AND item_id = '" . $inner_row["item_id"] . "' AND extras.for = '" . $inner_row["extraFor"] . "' GROUP by addon_items.id");
+            
+           
+            
+            
+if (mysqli_num_rows($extra_detail) > 0)
+{
+            while ($extra_row = mysqli_fetch_assoc($extra_detail))
+            {
+
+                $row_array2['add_on_id'] = $extra_row["add_on_id"];
+                $row_array2['item_id'] = $extra_row["item_id"];
+                $row_array2['amount'] = number_format((float)$extra_row["amount"], 2, '.', '');
+                $row_array2['addon_name'] = $extra_row["addon_name"];
+                $row_array2['qty'] = $extra_row["qty"];
+                array_push($extra_json_response, $row_array2);
+            }
+}
+            $row_array1['extra'] = $extra_json_response;
+            array_push($inner_json_response, $row_array1);
+        }
+}
+
+        $row_array['itemqty'] = $counter;
+        $row_array['itemtprice'] = $totalamt;
+        $row_array['sub_total'] = $totalamt . "";
+        $row_array['order_details'] = $inner_json_response;
+
+        array_push($json_response, $row_array);
+    }
+    }//if
+}
+
+echo json_encode($json_response);
+
+mysqli_close($conn);
+
+?>

@@ -1,0 +1,1 @@
+[08-Jul-2021 07:32:40 America/Chicago] PHP Fatal error:  Class 'Laravel\Lumen\Routing\Controller' not found in /home/deliverygurucouk/public_html/api/app/Http/Controllers/Controller.php on line 7
