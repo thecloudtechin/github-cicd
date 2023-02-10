@@ -24,4 +24,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: ls -l
-      # - run: cd dg-api && docker build -t arunr039/lumen-api:v1
+      - run: cd dg-api 
+ #     - run: docker build -t arunr039/lumen-api:v1
