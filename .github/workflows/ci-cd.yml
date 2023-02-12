@@ -1,46 +1,46 @@
-name: app-ci-pipeline
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-on:
-  push:
-    branches:
-      - develop
-  #   paths:
-  #     - '.dg-api/Dockerfile'
-  #     - '.github/workflows/**'
-  #     - '.terraform/**'
-  #     - 'src/**'
-  # pull_request:
-  #   branches:
-  #     - master
-jobs:
-  build-and-push-docker-image:
-    name: Build and push docker image
-    runs-on: ubuntu-latest
-    needs: infrastructure-setup
-    environment: develop-env
-    # if: github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v3
-      - run: ls -l
-      - run: cd dg-api && ls -l
-      - run: cd dg-api && docker build -t arunr039/lumen-api:v1 .
-  infrastructure-setup:
-    name: building the cloud infra
-    runs-on: ubuntu-latest
-    environment: develop-env
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v1
-      - name: Run terraform init in terraform dir
-        run: cd terraform && terraform init
-      # - name: list dir
-      #   run: ls -l 
-      # - name: list modules
-      #   run: cd terraform/modules && ls -l
-
-      - name: Terraform apply
-        run: cd terraform && terraform apply -auto-approve
-    
+#name: app-ci-pipeline
+#env:
+#  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
+#  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+#on:
+#  push:
+#    branches:
+#      - develop
+#  #   paths:
+#  #     - '.dg-api/Dockerfile'
+#  #     - '.github/workflows/**'
+#  #     - '.terraform/**'
+#  #     - 'src/**'
+#  # pull_request:
+#  #   branches:
+#  #     - master
+#jobs:
+#  build-and-push-docker-image:
+#    name: Build and push docker image
+#    runs-on: ubuntu-latest
+#    needs: infrastructure-setup
+#    environment: develop-env
+#    # if: github.ref == 'refs/heads/master'
+#    steps:
+#      - uses: actions/checkout@v3
+#      - run: ls -l
+#      - run: cd dg-api && ls -l
+#      - run: cd dg-api && docker build -t arunr039/lumen-api:v1 .
+#  infrastructure-setup:
+#    name: building the cloud infra
+#    runs-on: ubuntu-latest
+#    environment: develop-env
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: hashicorp/setup-terraform@v1
+#      - name: Run terraform init in terraform dir
+#        run: cd terraform && terraform init
+#      # - name: list dir
+#      #   run: ls -l
+#      # - name: list modules
+#      #   run: cd terraform/modules && ls -l
+#
+#      - name: Terraform apply
+#        run: cd terraform && terraform apply -auto-approve
+#

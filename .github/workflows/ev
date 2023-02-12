@@ -1,0 +1,13 @@
+{
+  "source": [
+    "com.example.app"
+  ],
+  "detail-type": [
+    "Application Event"
+  ],
+  "detail": {
+    "tenant_id": [
+      "D9vGe8C3JFUAAkeO"
+    ]
+  }
+}
