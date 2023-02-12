@@ -3,7 +3,7 @@ name: Create EventBridge Rule
 on:
   push:
     branches:
-      - main
+      - develop
 
 env:
   TENANT_ID: D9vGe8C3JFUAAkeO
