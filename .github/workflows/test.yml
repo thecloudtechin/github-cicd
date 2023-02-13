@@ -26,7 +26,7 @@ jobs:
 
       - name: Create S3 Bucket
         run: |
-          aws s3 mb s3://my-bucket-123er-${{ env.AWS_REGION }}
+          aws s3 mb s3://my-bucket-123errfg-${{ env.AWS_REGION }}
 
       - name: Create SNS Topic
         run: |
