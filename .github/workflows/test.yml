@@ -1,50 +1,53 @@
-name: Create EventBridge Rule
-#env:
-#  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
-#  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-#  TENANT_ID: D9vGe8C3JFUAAkeO
+name: Create AWS Resources
 
 on:
   push:
     branches:
-      - develop
+      - main
+
 env:
-  aws_access_key_id : ${{ secrets.AWS_ACCESS_KEY_ID }}
-  aws_secret_key_id : ${{ secrets.AWS.ACCESS_SECRET_KEY }}
-  aws_region : ${{ secrets.AWS_DEFAULT_REGION }}
+  AWS_REGION: ap-south-1
+
 jobs:
-  create-eventbridge-rule:
-    environment: develop-env
+  create-resources:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Set up AWS CLI
+      - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Create S3 Bucket
+        run: |
+          aws s3 mb s3://my-bucket-${{ env.AWS_REGION }}
+
       - name: Create SNS Topic
-        id: create-sns-topic
         run: |
           aws sns create-topic \
-          --name "${{ env.TENANT_ID }}-sns-topic" \
+          --name my-topic \
           --output text \
-          --query 'TopicArn' > topic_arn.txt
-#
-#      - name: Get SNS Topic ARN
-#        run: echo "SNS Topic ARN: $(cat topic_arn.txt)"
+          --query 'TopicArn' \
+          | tee topic-arn.txt
 
-      - name: Create EventBridge Rule
+      - name: Create SQS Queue
         run: |
-          aws events put-rule \
-          --name "${{ env.TENANT_ID }}-event-rule" \
-          --event-pattern file://event-pattern.json
+          aws sqs create-queue \
+          --queue-name my-queue \
+          --output text \
+          --query 'QueueUrl' \
+          | tee queue-url.txt
 
-      - name: Add SNS Target to EventBridge Rule
+      - name: Add SNS Subscription to SQS Queue
         run: |
-          TOPIC_ARN=$(cat topic_arn.txt)
-          
-          aws events put-targets \
-          --rule "${{ env.TENANT_ID }}-event-rule" \
-          --targets "Id"="1", "Arn"="$TOPIC_ARN"
+          TOPIC_ARN=$(cat topic-arn.txt)
+          QUEUE_URL=$(cat queue-url.txt)
+          aws sns subscribe \
+          --topic-arn "$TOPIC_ARN" \
+          --protocol sqs \
+          --notification-endpoint "$QUEUE_URL"
