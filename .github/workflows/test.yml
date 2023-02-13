@@ -32,9 +32,9 @@ jobs:
           --name "${{ env.TENANT_ID }}-sns-topic" \
           --output text \
           --query 'TopicArn' > topic_arn.txt
-
-      - name: Get SNS Topic ARN
-        run: echo "SNS Topic ARN: $(cat topic_arn.txt)"
+#
+#      - name: Get SNS Topic ARN
+#        run: echo "SNS Topic ARN: $(cat topic_arn.txt)"
 
       - name: Create EventBridge Rule
         run: |
