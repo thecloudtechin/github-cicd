@@ -32,23 +32,23 @@ jobs:
         run: |
           aws sns create-topic \
           --name my-topic \
-          --output text \
           --query 'TopicArn' \
-          | tee topic-arn.txt
+          | tee topic-arn.txt \
+            cat topic-rn.txt
 
-      - name: Create SQS Queue
-        run: |
-          aws sqs create-queue \
-          --queue-name my-queue \
-          --output text \
-          --query 'QueueUrl' \
-          | tee queue-url.txt
+#      - name: Create SQS Queue
+#        run: |
+#          aws sqs create-queue \
+#          --queue-name my-queue \
+#          --output text \
+#          --query 'QueueUrl' \
+#          | tee queue-url.txt
 
-      - name: Add SNS Subscription to SQS Queue
-        run: |
-          TOPIC_ARN=$(cat topic-arn.txt)
-          QUEUE_URL=$(cat queue-url.txt)
-          aws sns subscribe \
-          --topic-arn "$TOPIC_ARN" \
-          --protocol sqs \
-          --notification-endpoint "$QUEUE_URL"
+#      - name: Add SNS Subscription to SQS Queue
+#        run: |
+#          TOPIC_ARN=$(cat topic-arn.txt)
+#          QUEUE_URL=$(cat queue-url.txt)
+#          aws sns subscribe \
+#          --topic-arn "$TOPIC_ARN" \
+#          --protocol sqs \
+#          --notification-endpoint "$QUEUE_URL"
