@@ -26,15 +26,15 @@ jobs:
 
       - name: Create S3 Bucket
         run: |
-          aws s3 mb s3://my-bucket-123errfg-${{ env.AWS_REGION }}
+          aws s3 mb s3://my-bucket-12345errfg-${{ env.AWS_REGION }}
 
       - name: Create SNS Topic
         run: |
           aws sns create-topic \
           --name my-topic \
-          --query 'TopicArn' \
-          | tee topic-arn.txt \
-            cat topic-rn.txt
+      - name: query topic arn
+        run: |
+          aws sns list-topics > a.txt && cat a.txt
 
 #      - name: Create SQS Queue
 #        run: |
