@@ -1,14 +1,15 @@
 name: Create EventBridge Rule
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  TENANT_ID: D9vGe8C3JFUAAkeO
 
 on:
   push:
     branches:
       - develop
-
-env:
-  TENANT_ID: D9vGe8C3JFUAAkeO
-  AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-
+#env:
 jobs:
   create-eventbridge-rule:
     environment: develop-env
@@ -20,12 +21,6 @@ jobs:
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
-        with:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-
-
       - name: Create SNS Topic
         id: create-sns-topic
         run: |
