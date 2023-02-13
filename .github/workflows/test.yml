@@ -7,10 +7,11 @@ on:
 
 env:
   TENANT_ID: D9vGe8C3JFUAAkeO
-  AWS_REGION: us-west-2
+  AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
 jobs:
   create-eventbridge-rule:
+    environment: develop-env
     runs-on: ubuntu-latest
 
     steps:
