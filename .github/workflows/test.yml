@@ -3,7 +3,7 @@ name: Create AWS Resources
 on:
   push:
     branches:
-      - main
+      - develop
 
 env:
   AWS_REGION: ap-south-1
