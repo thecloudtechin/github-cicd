@@ -1,20 +1,21 @@
-#name: app-ci-pipeline
-#env:
-#  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
-#  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-#on:
-#  push:
-#    branches:
-#      - develop
-#  #   paths:
-#  #     - '.dg-api/Dockerfile'
-#  #     - '.github/workflows/**'
-#  #     - '.terraform/**'
-#  #     - 'src/**'
-#  # pull_request:
-#  #   branches:
-#  #     - master
+name: app-ci-pipeline
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS.ACCESS_SECRET_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+on:
+  push:
+    branches:
+      - develop
+      - test
+  #   paths:
+  #     - '.dg-api/Dockerfile'
+  #     - '.github/workflows/**'
+  #     - '.terraform/**'
+  #     - 'src/**'
+  # pull_request:
+  #   branches:
+  #     - master
 #jobs:
 #  build-and-push-docker-image:
 #    name: Build and push docker image
@@ -27,20 +28,26 @@
 #      - run: ls -l
 #      - run: cd dg-api && ls -l
 #      - run: cd dg-api && docker build -t arunr039/lumen-api:v1 .
-#  infrastructure-setup:
-#    name: building the cloud infra
-#    runs-on: ubuntu-latest
-#    environment: develop-env
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: hashicorp/setup-terraform@v1
-#      - name: Run terraform init in terraform dir
-#        run: cd terraform && terraform init
-#      # - name: list dir
-#      #   run: ls -l
-#      # - name: list modules
-#      #   run: cd terraform/modules && ls -l
-#
-#      - name: Terraform apply
-#        run: cd terraform && terraform apply -auto-approve
-#
+  infrastructure-setup:
+    name: building the cloud infra
+    runs-on: ubuntu-latest
+    environment: develop-env
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - uses: hashicorp/setup-terraform@v1
+      - name: Run terraform init in terraform dir
+        run: cd terraform && terraform init
+      # - name: list dir
+      #   run: ls -l
+      # - name: list modules
+      #   run: cd terraform/modules && ls -l
+
+      - name: Terraform apply
+        run: cd terraform && terraform apply -auto-approve
+
