@@ -11,6 +11,7 @@ env:
 jobs:
   create-resources:
     runs-on: ubuntu-latest
+    environment: develop-env
 
     steps:
       - name: Checkout Code
