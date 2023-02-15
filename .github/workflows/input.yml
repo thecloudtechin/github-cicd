@@ -14,5 +14,11 @@ branch:
 paths:
   - 'Dockerfile'
   - '.github/worlflow'
+jobs:
+  runs-on: ubuntu-latest
+  environment: develop-env
+  steps:
+   - name: Checkout Code
+     uses: actions/checkout@v2
 
 
