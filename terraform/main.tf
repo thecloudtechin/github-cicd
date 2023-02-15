@@ -6,7 +6,7 @@ module "sns-sqs-queue" {
   source = "./modules/sqs"
 }
 
-module "ec2" {
-  source = "./modules/ec2"
-  
-}
+#module "ec2" {
+#  source = "./modules/ec2"
+#
+#}
