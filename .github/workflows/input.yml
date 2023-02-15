@@ -16,10 +16,10 @@ paths:
   - '.github/worlflow'
 jobs:
   create-resources:
-  runs-on: ubuntu-latest
-  environment: develop-envs
-  steps:
-   - name: Checkout Code
-     uses: actions/checkout@v2
+    runs-on: ubuntu-latest
+    environment: develop-envs
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
 
 
