@@ -3,23 +3,20 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION : ${{ secrets.AWS_DEFAULT_REGION }}
-on:
-  workflow_dispatch
+on: workflow_dispatch
 inputs:
   env:
     type: choice
     description: 'Select Environment'
-branch:
-  - test
-paths:
-  - 'Dockerfile'
-  - '.github/worlflow'
 jobs:
-  create-resources:
+  deployment:
+    environment: develop-env
     runs-on: ubuntu-latest
-    environment: develop-envs
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: List Directories
+        run: ls -l
+
 
 
