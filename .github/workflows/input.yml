@@ -4,10 +4,10 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION : ${{ secrets.AWS_DEFAULT_REGION }}
 on: workflow_dispatch
-inputs:
-  env:
-    type: choice
-    description: 'Select Environment'
+#inputs:
+#  env:
+#    type: choice
+#    description: 'Select Environment'
 jobs:
   deployment:
     environment: develop-env
